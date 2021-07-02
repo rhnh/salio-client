@@ -1,23 +1,10 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React from 'react'
+import DisplayNavBar from './DisplayNavBar'
 export default function NavBar() {
-  return (
-    <div>
-      <ul>
-        <li>
-          <Link to="/">Home</Link>
-        </li>
-        <li>
-          <Link to="/about" className="nav-right">
-            about
-          </Link>
-        </li>
-        <li>
-          <Link to="/contacts" className="nav-right">
-            contacts
-          </Link>
-        </li>
-      </ul>
-    </div>
-  );
+  const [isLogged, setLogged] = React.useState<boolean>(false)
+  const handleLogin = (state: boolean) => {
+    console.log('state has been changed', state)
+    setLogged(state)
+  }
+  return <DisplayNavBar isLogin={isLogged} handleLogin={handleLogin} />
 }
