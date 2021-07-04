@@ -2,7 +2,7 @@ import { BrowserRouter as Router } from 'react-router-dom'
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import React from 'react'
-import DisplayNavBar from '../components/DisplayNavBar'
+import DisplayNavBar from '../commons/DisplayNavBar'
 
 describe('basic Look/function regardless of condition', () => {
   test('valid', () => {
@@ -29,8 +29,9 @@ describe('basic Look/function regardless of condition', () => {
 })
 
 describe('condition , if logged out', () => {
+  const setState = jest.fn()
+
   test('valid', () => {
-    const setState = (s: boolean) => {}
     const { rerender } = render(
       <Router>
         <DisplayNavBar isLogin={true} handleLogin={setState} />;
@@ -50,8 +51,9 @@ describe('condition , if logged out', () => {
   })
 })
 describe('condition , if logged in', () => {
+  const setState = jest.fn()
+
   test('valid', () => {
-    const setState = (s: boolean) => {}
     const { rerender } = render(
       <Router>
         <DisplayNavBar isLogin={false} handleLogin={setState} />;
