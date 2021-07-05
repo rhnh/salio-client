@@ -1,4 +1,4 @@
-import React, { useReducer } from 'react'
+import React, { useEffect, useReducer, useState } from 'react'
 import { UserAction, UserState } from '../../utils/types'
 interface Types {
   title: string
@@ -9,6 +9,7 @@ function reducer(state: UserState, actions: UserAction): UserState {
     return {
       ...state,
       [actions.name]: actions.value,
+      isEmpty: false,
     }
   }
   return state
@@ -20,15 +21,49 @@ const initialActions: UserState = {
 }
 export default function LoginForm({ title, isSignup = false }: Types) {
   const [state, dispatch] = useReducer(reducer, initialActions)
+  const [isValidInput, setIsValidInput] = useState(true)
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { value, name } = e.target
+    dispatch({
+      type: 'input',
+      name,
+      value,
+    })
+  }
+
+  useEffect(() => {
+    if (isSignup) {
+      if (
+        state.username.length > 0 &&
+        state.password.length > 0 &&
+        state.confirmPassword &&
+        state.confirmPassword === state.password
+      ) {
+        setIsValidInput(false)
+      } else {
+        setIsValidInput(true)
+      }
+    } else {
+      if (state.username.length > 0 && state.password.length > 0) {
+        setIsValidInput(false)
+      }
+      setIsValidInput(true)
+    }
+  }, [isSignup, state.confirmPassword, state.password, state.username])
+  const handleSubmit = (e: React.FocusEvent<HTMLFormElement>) => {
+    e.preventDefault()
+  }
   return (
-    <form>
+    <form onSubmit={handleSubmit}>
       <h3>{title}</h3>
       <p data-testid="custom-element">
         <label htmlFor="username">Username</label>
         <input
           id="username"
           type="text"
+          name="username"
           placeholder="Type your username here"
+          onChange={handleChange}
         />
       </p>
       <p data-testid="custom-element">
@@ -36,7 +71,9 @@ export default function LoginForm({ title, isSignup = false }: Types) {
         <input
           type="password"
           id="password"
+          name="password"
           placeholder="Type your password here"
+          onChange={handleChange}
         />
       </p>
       {isSignup && (
@@ -45,11 +82,13 @@ export default function LoginForm({ title, isSignup = false }: Types) {
           <input
             type="password"
             id="confirm-password"
+            name="confirmPassword"
             placeholder="Re-type your password here"
+            onChange={handleChange}
           />
         </p>
       )}
-      <button type="submit" disabled={state.isEmpty}>
+      <button type="submit" disabled={isValidInput}>
         Submit
       </button>
     </form>

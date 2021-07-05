@@ -11,6 +11,7 @@ export type UserAction = {
   name: string
   error?: any
   errorCode?: number
+  isEmpty?: boolean
 }
 export type UserState = {
   username: string
